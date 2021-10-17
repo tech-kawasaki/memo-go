@@ -1,0 +1,291 @@
+openapi: 3.0.3
+info:
+  description: メモのCRUD用API
+  title: memo-go
+  version: 1.0.0
+servers:
+- description: develop
+  url: http://localhost:8080
+paths:
+  /memos:
+    get:
+      description: dbに登録されたメモのタイトル一覧を取得する
+      operationId: getMemos
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                description: メモのタイトル一覧
+                items:
+                  $ref: '#/components/schemas/inline_response_200'
+                type: array
+          description: Ok
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Internal Server Error
+      summary: メモの一覧取得
+    post:
+      description: 送られてきた情報でメモを作成する
+      operationId: postMemos
+      requestBody:
+        $ref: '#/components/requestBodies/inline_object'
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  description: メモのタイトル
+                  maxLength: 255
+                  minLength: 1
+                  type: string
+                content:
+                  description: メモの中身
+                  maxLength: 21844
+                  minLength: 1
+                  type: string
+              required:
+              - content
+              - title
+              type: object
+        description: 作成するメモの情報
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+          description: Bad Request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Internal Server Error
+      summary: メモの作成
+  /memo/{id}:
+    delete:
+      description: 対象idのメモを削除する
+      operationId: deleteMemo
+      parameters:
+      - description: メモのid
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Internal Server Error
+      summary: メモの削除
+    get:
+      description: 対象idのメモの詳細を取得する
+      operationId: getMemo
+      parameters:
+      - description: メモのid
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Internal Server Error
+      summary: メモの詳細
+    post:
+      description: 送られてきた情報で対象idのメモを更新する
+      operationId: postMemo
+      parameters:
+      - description: メモのid
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+          description: OK
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+          description: Internal Server Error
+      summary: メモの更新
+components:
+  requestBodies:
+    inline_object:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_object'
+  responses:
+    "500InternalServerError":
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_500'
+      description: Internal Server Error
+    "404NotFound":
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_500'
+      description: Not Found
+  schemas:
+    inline_response_200_1:
+      example:
+        id: 0
+      properties:
+        id:
+          description: メモのid
+          type: integer
+      required:
+      - id
+      type: object
+    inline_response_200:
+      example:
+        id: 0
+        title: title
+      properties:
+        id:
+          description: メモのid
+          type: integer
+        title:
+          description: メモのタイトル
+          type: string
+      required:
+      - id
+      - title
+      type: object
+    inline_object:
+      properties:
+        title:
+          description: メモのタイトル
+          maxLength: 255
+          minLength: 1
+          type: string
+        content:
+          description: メモの中身
+          maxLength: 21844
+          minLength: 1
+          type: string
+      required:
+      - content
+      - title
+      type: object
+    inline_response_200_2:
+      example:
+        id: 0
+        title: title
+        content: content
+      properties:
+        id:
+          description: メモのid
+          type: integer
+        title:
+          description: メモのタイトル
+          type: string
+        content:
+          description: メモの中身
+          type: string
+      required:
+      - content
+      - id
+      - title
+      type: object
+    inline_response_200_3:
+      example:
+        message: message
+      properties:
+        message:
+          description: 更新成功メッセージ
+          type: string
+      required:
+      - message
+      type: object
+    inline_response_200_4:
+      example:
+        message: message
+      properties:
+        message:
+          description: 削除成功メッセージ
+          type: string
+      required:
+      - message
+      type: object
+    inline_response_500:
+      properties:
+        message:
+          description: エラーメッセージ
+          type: string
+      required:
+      - message
+      type: object
+    inline_response_400:
+      properties:
+        message:
+          type: string
+      required:
+      - message
+      type: object
