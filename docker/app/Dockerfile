@@ -4,7 +4,9 @@ WORKDIR /go/src/app
 
 RUN apk update && apk add git
 COPY go.mod go.sum ./
-RUN go mod tidy
+ARG CGO_ENABLED=0
+RUN go mod tidy && \
+    go install github.com/rubenv/sql-migrate/...@latest
 EXPOSE 8080
 
 CMD ["go", "run", "main.go"]
