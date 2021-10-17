@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  title: memo-go
+  version: 1.0.0
+  description: メモのCRUD用API
+servers:
+  - url: 'http://localhost:8080'
+    description: develop
+paths:
+  /memos:
+    get:
+      description: dbに登録されたメモのタイトル一覧を取得する
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                description: メモのタイトル一覧
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: メモのid
+                    title:
+                      type: string
+                      description: メモのタイトル
+                  required:
+                    - id
+                    - title
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+      operationId: getMemos
+      summary: メモの一覧取得
+    post:
+      summary: メモの作成
+      operationId: postMemos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: メモのid
+                required:
+                  - id
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+      description: 送られてきた情報でメモを作成する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  description: メモのタイトル
+                content:
+                  type: string
+                  minLength: 1
+                  maxLength: 21844
+                  description: メモの中身
+              required:
+                - title
+                - content
+        description: 作成するメモの情報
+  '/memo/{id}':
+    get:
+      summary: メモの詳細
+      operationId: getMemo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: メモのid
+                  title:
+                    type: string
+                    description: メモのタイトル
+                  content:
+                    type: string
+                    description: メモの中身
+                required:
+                  - id
+                  - title
+                  - content
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+      description: 対象idのメモの詳細を取得する
+      parameters: []
+    post:
+      summary: メモの更新
+      operationId: postMemo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 更新成功メッセージ
+                required:
+                  - message
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+      description: 送られてきた情報で対象idのメモを更新する
+    parameters:
+      - schema:
+          type: integer
+          minimum: 1
+        name: id
+        in: path
+        required: true
+        description: メモのid
+    delete:
+      summary: メモの削除
+      operationId: deleteMemo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: 削除成功メッセージ
+                required:
+                  - message
+        '404':
+          $ref: '#/components/responses/404NotFound'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+      description: 対象idのメモを削除する
+components:
+  responses:
+    500InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: エラーメッセージ
+            required:
+              - message
+    404NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: エラーメッセージ
+            required:
+              - message
