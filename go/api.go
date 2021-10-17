@@ -36,6 +36,6 @@ type DefaultApiServicer interface {
 	DeleteMemo(context.Context, int32) (ImplResponse, error)
 	GetMemo(context.Context, int32) (ImplResponse, error)
 	GetMemos(context.Context) (ImplResponse, error)
-	PostMemo(context.Context, int32) (ImplResponse, error)
+	PostMemo(context.Context, int32, InlineObject1) (ImplResponse, error)
 	PostMemos(context.Context, InlineObject) (ImplResponse, error)
 }

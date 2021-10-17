@@ -145,7 +145,18 @@ func (c *DefaultApiController) PostMemo(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	result, err := c.service.PostMemo(r.Context(), idParam)
+	inlineObject1Param := InlineObject1{}
+	d := json.NewDecoder(r.Body)
+	d.DisallowUnknownFields()
+	if err := d.Decode(&inlineObject1Param); err != nil {
+		c.errorHandler(w, r, &ParsingError{Err: err}, nil)
+		return
+	}
+	if err := AssertInlineObject1Required(inlineObject1Param); err != nil {
+		c.errorHandler(w, r, err, nil)
+		return
+	}
+	result, err := c.service.PostMemo(r.Context(), idParam, inlineObject1Param)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

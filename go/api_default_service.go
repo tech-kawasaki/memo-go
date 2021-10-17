@@ -75,7 +75,7 @@ func (s *DefaultApiService) GetMemos(ctx context.Context) (ImplResponse, error) 
 }
 
 // PostMemo - メモの更新
-func (s *DefaultApiService) PostMemo(ctx context.Context, id int32) (ImplResponse, error) {
+func (s *DefaultApiService) PostMemo(ctx context.Context, id int32, inlineObject1 InlineObject1) (ImplResponse, error) {
 	// TODO - update PostMemo with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 

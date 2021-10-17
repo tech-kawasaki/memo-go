@@ -72,13 +72,9 @@ paths:
               properties:
                 title:
                   type: string
-                  minLength: 1
-                  maxLength: 255
                   description: メモのタイトル
                 content:
                   type: string
-                  minLength: 1
-                  maxLength: 21844
                   description: メモの中身
               required:
                 - title
@@ -136,6 +132,17 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalServerError'
       description: 送られてきた情報で対象idのメモを更新する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+        description: 更新するメモの情報
     parameters:
       - schema:
           type: integer
